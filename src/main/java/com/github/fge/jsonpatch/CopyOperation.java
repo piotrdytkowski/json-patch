@@ -40,13 +40,10 @@ import com.github.fge.jackson.jsonpointer.JsonPointer;
  *
  * <p>It is an error if {@code from} fails to resolve to a JSON value.</p>
  */
-public final class CopyOperation
-    extends DualPathOperation
-{
+public final class CopyOperation extends DualPathOperation {
+
     @JsonCreator
-    public CopyOperation(@JsonProperty("from") final JsonPointer from,
-        @JsonProperty("path") final JsonPointer path)
-    {
+    public CopyOperation(@JsonProperty("from") final JsonPointer from, @JsonProperty("path") final JsonPointer path) {
         super("copy", from, path);
     }
 
@@ -56,8 +53,7 @@ public final class CopyOperation
     {
         final JsonNode dupData = from.path(node).deepCopy();
         if (dupData.isMissingNode())
-            throw new JsonPatchException(BUNDLE.getMessage(
-                "jsonPatch.noSuchPath"));
+            throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));
         return new AddOperation(path, dupData).apply(node);
     }
 }
