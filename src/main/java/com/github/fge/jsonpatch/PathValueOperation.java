@@ -45,7 +45,7 @@ public abstract class PathValueOperation
      * @param path affected path
      * @param value JSON value
      */
-    protected PathValueOperation(final String op, final JsonPointer path,
+    protected PathValueOperation(final String op, final String path,
         final JsonNode value)
     {
         super(op, path);

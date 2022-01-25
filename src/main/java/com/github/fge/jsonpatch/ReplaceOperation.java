@@ -39,25 +39,21 @@ import com.jayway.jsonpath.JsonPath;
  */
 public final class ReplaceOperation extends PathValueOperation {
 
-    private final String pathString;
-
     @JsonCreator
-    public ReplaceOperation(@JsonProperty("path") final JsonPointer path, @JsonProperty("value") final JsonNode value) {
+    public ReplaceOperation(@JsonProperty("path") final String path, @JsonProperty("value") final JsonNode value) {
         super("replace", path, value);
-        pathString = path.toString();
     }
 
     @Override
     public JsonNode apply(final JsonNode node) throws JsonPatchException {
-        if (path.path(node).isMissingNode())
+        String jsonPath = JsonPathParser.tmfStringToJsonPath(path);
+        DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
+        final JsonNode nodeAtPath = nodeContext.read(jsonPath);
+        if (nodeAtPath == null)
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));
         final JsonNode replacement = value.deepCopy();
         if (path.isEmpty())
             return replacement;
-
-        DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
-        final String jsonPath = "$" + pathString.replace('/', '.')
-                .replaceAll("\\.(\\d+)", ".[$1]");
 
         return nodeContext
                 .set(jsonPath, value)

@@ -68,34 +68,32 @@ import com.jayway.jsonpath.JsonPath;
 public final class AddOperation extends PathValueOperation {
     public static final String LAST_ARRAY_ELEMENT_SYMBOL = "-";
 
-    private final String pathString;
-
     @JsonCreator
-    public AddOperation(@JsonProperty("path") final JsonPointer path,
+    public AddOperation(@JsonProperty("path") final String path,
                         @JsonProperty("value") final JsonNode value) {
         super("add", path, value);
-        pathString = path.toString();
     }
 
     @Override
     public JsonNode apply(final JsonNode node) throws JsonPatchException {
-        if (pathString.isEmpty())
+        if (path.isEmpty())
             return value;
         /*
          * Check the parent node: it must exist and be a container (ie an array
          * or an object) for the add operation to work.
          */
-        final JsonNode parentNode = path.parent().path(node);
-        if (parentNode.isMissingNode())
+        final int lastSlashIndex = path.lastIndexOf('/');
+        final String newNodeName = path.substring(lastSlashIndex + 1);
+        final String pathToParent = path.substring(0, lastSlashIndex);
+        final String jsonPath = JsonPathParser.tmfStringToJsonPath(pathToParent);
+        DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
+
+        final JsonNode parentNode = nodeContext.read(jsonPath);
+        if (parentNode == null)
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchParent"));
         if (!parentNode.isContainerNode())
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.parentNotContainer"));
-        final int lastSlashIndex = pathString.lastIndexOf('/');
-        final String newNodeName = pathString.substring(lastSlashIndex + 1);
-        final String pathToParent = pathString.substring(0, lastSlashIndex);
-        final String jsonPath = "$" + pathToParent.replace('/', '.')
-                .replaceAll("\\.(\\d+)", ".[$1]");
-        DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
+
         return parentNode.isArray()
                 ? addToArray(nodeContext, jsonPath, newNodeName)
                 : addToObject(nodeContext, jsonPath, newNodeName);

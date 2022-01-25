@@ -79,7 +79,7 @@ public abstract class JsonPatchOperation
             }
             @Override
             public Set<Option> options() {
-                return EnumSet.noneOf(Option.class);
+                return EnumSet.of(Option.SUPPRESS_EXCEPTIONS);
             }
             @Override
             public MappingProvider mappingProvider() {
@@ -96,7 +96,7 @@ public abstract class JsonPatchOperation
      *
      * However, we need to serialize using .toString().
      */
-    protected final JsonPointer path;
+    protected final String path;
 
     /**
      * Constructor
@@ -104,8 +104,7 @@ public abstract class JsonPatchOperation
      * @param op the operation name
      * @param path the JSON Pointer for this operation
      */
-    protected JsonPatchOperation(final String op, final JsonPointer path)
-    {
+    protected JsonPatchOperation(final String op, final String path) {
         this.op = op;
         this.path = path;
     }
@@ -124,7 +123,7 @@ public abstract class JsonPatchOperation
         return op;
     }
 
-    public final JsonPointer getPath() {
+    public final String getPath() {
         return path;
     }
 

@@ -41,20 +41,19 @@ import java.io.IOException;
  */
 public final class RemoveOperation extends JsonPatchOperation {
     @JsonCreator
-    public RemoveOperation(@JsonProperty("path") final JsonPointer path) {
+    public RemoveOperation(@JsonProperty("path") final String path) {
         super("remove", path);
     }
 
     @Override
     public JsonNode apply(final JsonNode node) throws JsonPatchException {
-        if (path.isEmpty())
-            return MissingNode.getInstance();
-        if (path.path(node).isMissingNode())
-            throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));
+        if (path.isEmpty()) return MissingNode.getInstance();
 
         DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
-        final String jsonPath = "$" + path.toString().replace('/', '.')
-                .replaceAll("\\.(\\d+)", ".[$1]");
+        final String jsonPath = JsonPathParser.tmfStringToJsonPath(path);
+
+        if (nodeContext.read(jsonPath) == null)
+            throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));
         return nodeContext
                 .delete(jsonPath)
                 .read("$", JsonNode.class);
