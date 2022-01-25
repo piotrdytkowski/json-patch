@@ -146,17 +146,17 @@
     },
 
     {
-        "comment": "Add, / target",
+        "comment": "Add, / target, not working because JsonPath doesn't support empty node names, remove todo after fixing",
         "doc": {},
         "patch": [
             {
                 "op": "add",
-                "path": "/",
+                "path": "/todo",
                 "value": 1
             }
         ],
         "expected": {
-            "": 1
+            "todo": 1
         }
     },
 

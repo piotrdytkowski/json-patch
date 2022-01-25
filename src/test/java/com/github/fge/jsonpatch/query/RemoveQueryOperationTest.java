@@ -6,9 +6,9 @@ import org.testng.annotations.Ignore;
 import java.io.IOException;
 
 @Ignore
-public class AddOperationTest extends JsonPatchOperationTest {
+public class RemoveQueryOperationTest extends JsonPatchOperationTest {
 
-    public AddOperationTest() throws IOException {
-        super("query/add");
+    public RemoveQueryOperationTest() throws IOException {
+        super("query/remove");
     }
 }
