@@ -50,7 +50,7 @@ public final class RemoveOperation extends JsonPatchOperation {
             return MissingNode.getInstance();
         }
 
-        DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
+        final DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
         final String jsonPath = JsonPathParser.tmfStringToJsonPath(path);
 
         if (nodeContext.read(jsonPath) == null) {

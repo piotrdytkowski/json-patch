@@ -49,7 +49,7 @@ public final class CopyOperation extends DualPathOperation {
 
     @Override
     public JsonNode apply(final JsonNode node) throws JsonPatchException {
-        String jsonPath = JsonPathParser.tmfStringToJsonPath(from);
+        final String jsonPath = JsonPathParser.tmfStringToJsonPath(from);
         final JsonNode dupData = JsonPath.parse(node.deepCopy()).read(jsonPath);
         if (dupData == null) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));

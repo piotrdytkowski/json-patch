@@ -46,8 +46,8 @@ public final class ReplaceOperation extends PathValueOperation {
 
     @Override
     public JsonNode apply(final JsonNode node) throws JsonPatchException {
-        String jsonPath = JsonPathParser.tmfStringToJsonPath(path);
-        DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
+        final String jsonPath = JsonPathParser.tmfStringToJsonPath(path);
+        final DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
         final JsonNode nodeAtPath = nodeContext.read(jsonPath);
         if (nodeAtPath == null) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));

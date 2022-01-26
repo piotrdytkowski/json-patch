@@ -87,7 +87,7 @@ public final class AddOperation extends PathValueOperation {
         final String newNodeName = path.substring(lastSlashIndex + 1);
         final String pathToParent = path.substring(0, lastSlashIndex);
         final String jsonPath = JsonPathParser.tmfStringToJsonPath(pathToParent);
-        DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
+        final DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
 
         final JsonNode parentNode = nodeContext.read(jsonPath);
         if (parentNode == null) {
