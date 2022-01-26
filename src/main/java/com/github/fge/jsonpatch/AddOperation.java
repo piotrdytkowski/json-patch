@@ -76,8 +76,9 @@ public final class AddOperation extends PathValueOperation {
 
     @Override
     public JsonNode apply(final JsonNode node) throws JsonPatchException {
-        if (path.isEmpty())
+        if (path.isEmpty()) {
             return value;
+        }
         /*
          * Check the parent node: it must exist and be a container (ie an array
          * or an object) for the add operation to work.
@@ -89,10 +90,12 @@ public final class AddOperation extends PathValueOperation {
         DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
 
         final JsonNode parentNode = nodeContext.read(jsonPath);
-        if (parentNode == null)
+        if (parentNode == null) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchParent"));
-        if (!parentNode.isContainerNode())
+        }
+        if (!parentNode.isContainerNode()) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.parentNotContainer"));
+        }
 
         return parentNode.isArray()
                 ? addToArray(nodeContext, jsonPath, newNodeName)

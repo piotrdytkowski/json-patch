@@ -27,7 +27,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.node.MissingNode;
-import com.github.fge.jackson.jsonpointer.JsonPointer;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 
@@ -47,13 +46,16 @@ public final class RemoveOperation extends JsonPatchOperation {
 
     @Override
     public JsonNode apply(final JsonNode node) throws JsonPatchException {
-        if (path.isEmpty()) return MissingNode.getInstance();
+        if (path.isEmpty()) {
+            return MissingNode.getInstance();
+        }
 
         DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
         final String jsonPath = JsonPathParser.tmfStringToJsonPath(path);
 
-        if (nodeContext.read(jsonPath) == null)
+        if (nodeContext.read(jsonPath) == null) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));
+        }
         return nodeContext
                 .delete(jsonPath)
                 .read("$", JsonNode.class);

@@ -43,12 +43,12 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.*;
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "op")
 
 @JsonSubTypes({
-    @Type(name = "add", value = AddOperation.class),
-    @Type(name = "copy", value = CopyOperation.class),
-    @Type(name = "move", value = MoveOperation.class),
-    @Type(name = "remove", value = RemoveOperation.class),
-    @Type(name = "replace", value = ReplaceOperation.class),
-    @Type(name = "test", value = TestOperation.class)
+        @Type(name = "add", value = AddOperation.class),
+        @Type(name = "copy", value = CopyOperation.class),
+        @Type(name = "move", value = MoveOperation.class),
+        @Type(name = "remove", value = RemoveOperation.class),
+        @Type(name = "replace", value = ReplaceOperation.class),
+        @Type(name = "test", value = TestOperation.class)
 })
 
 /**
@@ -65,11 +65,8 @@ import static com.fasterxml.jackson.annotation.JsonTypeInfo.*;
  * </ul>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public abstract class JsonPatchOperation
-    implements JsonSerializable
-{
-    protected static final MessageBundle BUNDLE
-        = MessageBundles.getBundle(JsonPatchMessages.class);
+public abstract class JsonPatchOperation implements JsonSerializable {
+    protected static final MessageBundle BUNDLE = MessageBundles.getBundle(JsonPatchMessages.class);
 
     static {
         Configuration.setDefaults(new Configuration.Defaults() {
@@ -77,10 +74,12 @@ public abstract class JsonPatchOperation
             public JsonProvider jsonProvider() {
                 return new JacksonJsonNodeJsonProvider();
             }
+
             @Override
             public Set<Option> options() {
                 return EnumSet.of(Option.SUPPRESS_EXCEPTIONS);
             }
+
             @Override
             public MappingProvider mappingProvider() {
                 return new JacksonMappingProvider();
@@ -101,7 +100,7 @@ public abstract class JsonPatchOperation
     /**
      * Constructor
      *
-     * @param op the operation name
+     * @param op   the operation name
      * @param path the JSON Pointer for this operation
      */
     protected JsonPatchOperation(final String op, final String path) {
@@ -116,8 +115,7 @@ public abstract class JsonPatchOperation
      * @return the patched value
      * @throws JsonPatchException operation failed to apply to this value
      */
-    public abstract JsonNode apply(final JsonNode node)
-        throws JsonPatchException;
+    public abstract JsonNode apply(final JsonNode node) throws JsonPatchException;
 
     public final String getOp() {
         return op;

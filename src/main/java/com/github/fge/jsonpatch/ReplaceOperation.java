@@ -49,11 +49,13 @@ public final class ReplaceOperation extends PathValueOperation {
         String jsonPath = JsonPathParser.tmfStringToJsonPath(path);
         DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
         final JsonNode nodeAtPath = nodeContext.read(jsonPath);
-        if (nodeAtPath == null)
+        if (nodeAtPath == null) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));
+        }
         final JsonNode replacement = value.deepCopy();
-        if (path.isEmpty())
+        if (path.isEmpty()) {
             return replacement;
+        }
 
         return nodeContext
                 .set(jsonPath, value)

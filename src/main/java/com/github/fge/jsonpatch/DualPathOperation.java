@@ -25,7 +25,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.jsontype.TypeSerializer;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.github.fge.jackson.jsonpointer.JsonPointer;
 
 import java.io.IOException;
 
@@ -39,7 +38,7 @@ public abstract class DualPathOperation extends JsonPatchOperation {
     /**
      * Protected constructor
      *
-     * @param op operation name
+     * @param op   operation name
      * @param from source path
      * @param path destination path
      */
@@ -49,10 +48,7 @@ public abstract class DualPathOperation extends JsonPatchOperation {
     }
 
     @Override
-    public final void serialize(final JsonGenerator jgen,
-        final SerializerProvider provider)
-        throws IOException, JsonProcessingException
-    {
+    public final void serialize(final JsonGenerator jgen, final SerializerProvider provider) throws IOException, JsonProcessingException {
         jgen.writeStartObject();
         jgen.writeStringField("op", op);
         jgen.writeStringField("path", path.toString());
@@ -61,10 +57,8 @@ public abstract class DualPathOperation extends JsonPatchOperation {
     }
 
     @Override
-    public final void serializeWithType(final JsonGenerator jgen,
-        final SerializerProvider provider, final TypeSerializer typeSer)
-        throws IOException, JsonProcessingException
-    {
+    public final void serializeWithType(final JsonGenerator jgen, final SerializerProvider provider,
+                                        final TypeSerializer typeSer) throws IOException, JsonProcessingException {
         serialize(jgen, provider);
     }
 
@@ -73,8 +67,7 @@ public abstract class DualPathOperation extends JsonPatchOperation {
     }
 
     @Override
-    public final String toString()
-    {
+    public final String toString() {
         return "op: " + op + "; from: \"" + from + "\"; path: \"" + path + '"';
     }
 }

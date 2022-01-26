@@ -50,10 +50,12 @@ public final class TestOperation extends PathValueOperation {
     public JsonNode apply(final JsonNode node) throws JsonPatchException {
         final String jsonPath = JsonPathParser.tmfStringToJsonPath(path);
         final JsonNode tested = JsonPath.parse(node.deepCopy()).read(jsonPath);
-        if (tested == null)
+        if (tested == null) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchPath"));
-        if (!EQUIVALENCE.equivalent(tested, value))
+        }
+        if (!EQUIVALENCE.equivalent(tested, value)) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.valueTestFailure"));
+        }
         return node.deepCopy();
     }
 }
