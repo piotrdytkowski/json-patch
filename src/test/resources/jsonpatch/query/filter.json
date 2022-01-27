@@ -1,0 +1,50 @@
+{
+  "errors": [],
+  "ops": [
+    {
+      "op": {
+        "op": "add",
+        "path": "/note[?(@.author=='John Doe')]",
+        "value": "{\"text\": \"Informed\"}"
+      },
+      "node" : {
+        "id": "1",
+        "note": [{
+          "date": "2013-07-25T06:55:12.0Z",
+          "author": "John Doe",
+          "status": "Edited"
+        },
+          {
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans",
+            "status": "Edited"
+          },
+          {
+            "date": "2013-07-25T08:55:12.0Z",
+            "author": "John Doe",
+            "status": "Archived"
+          }]
+      },
+      "expected": {
+        "id": "1",
+        "note": [{
+          "date": "2013-07-25T06:55:12.0Z",
+          "author": "John Doe",
+          "status": "Edited",
+          "text": "Informed"
+        },
+          {
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans",
+            "status": "Edited"
+          },
+          {
+            "date": "2013-07-25T08:55:12.0Z",
+            "author": "John Doe",
+            "status": "Archived",
+            "text": "Informed"
+          }]
+      }
+    }
+  ]
+}

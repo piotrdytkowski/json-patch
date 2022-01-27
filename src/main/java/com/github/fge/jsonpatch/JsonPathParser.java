@@ -9,9 +9,31 @@ public class JsonPathParser {
         if ("/".equals(path)) {
             return "$";
         }
-        final String jsonPath = "$" + path.replace('/', '.')
+        final String[] pointerAndQuery = path.split("\\?", -1);
+        if (pointerAndQuery.length > 2) {
+            // TODO use different exception
+            throw new RuntimeException("Invalid query, only one `?` allowed.");
+        }
+
+        final String jsonPath = "$" + pointerAndQuery[0].replace('/', '.')
                 .replaceAll(ARRAY_ELEMENT_REGEX, ".[$1].")
+                .replaceAll(ARRAY_ELEMENT_REGEX, ".[$1].") // has to be repeated due to positive lookahead not working properly
                 .replaceAll(ARRAY_ELEMENT_LAST_REGEX, ".[$1]");
-        return jsonPath;
+        final String jsonPathWithQuery = addQueryIfApplicable(jsonPath, pointerAndQuery);
+        return jsonPathWithQuery;
+    }
+
+    private static String addQueryIfApplicable(String jsonPath, String[] pointerAndQuery) {
+        if (pointerAndQuery.length == 2) {
+            String preparedFilter = pointerAndQuery[1]
+                    .replaceAll("=", "==")
+                    .replaceAll("==([\\w ]+)", "=='$1'")
+                    .replaceFirst("\\w+", "@")
+                    .replaceAll("&\\w+", " && @")
+                    .replaceAll("\\|\\w+", " || @");//TODO are logical ORs supported?
+            return jsonPath.replaceFirst("(\\w+)", "$1[?(" + preparedFilter + ")]");
+        } else {
+            return jsonPath;
+        }
     }
 }

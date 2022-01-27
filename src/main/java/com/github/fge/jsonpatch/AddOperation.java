@@ -83,13 +83,14 @@ public final class AddOperation extends PathValueOperation {
          * Check the parent node: it must exist and be a container (ie an array
          * or an object) for the add operation to work.
          */
-        final int lastSlashIndex = path.lastIndexOf('/');
-        final String newNodeName = path.substring(lastSlashIndex + 1);
-        final String pathToParent = path.substring(0, lastSlashIndex);
-        final String jsonPath = JsonPathParser.tmfStringToJsonPath(pathToParent);
+        final String fullJsonPath = JsonPathParser.tmfStringToJsonPath(path);
+        final int lastDotIndex = fullJsonPath.lastIndexOf('.');
+        final String newNodeName = fullJsonPath.substring(lastDotIndex + 1);
+        final String pathToParent = fullJsonPath.substring(0, lastDotIndex);
+
         final DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
 
-        final JsonNode parentNode = nodeContext.read(jsonPath);
+        final JsonNode parentNode = nodeContext.read(pathToParent);
         if (parentNode == null) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchParent"));
         }
@@ -97,9 +98,23 @@ public final class AddOperation extends PathValueOperation {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.parentNotContainer"));
         }
 
-        return parentNode.isArray()
-                ? addToArray(nodeContext, jsonPath, newNodeName)
-                : addToObject(nodeContext, jsonPath, newNodeName);
+        // result will be a list of nodes
+        if (pathToParent.contains("[?(")) {
+            for (int i = 0; i < parentNode.size(); i++) {
+                JsonNode containerNode = parentNode.get(i);
+                DocumentContext containerContext = JsonPath.parse(containerNode);
+                if (containerNode.isArray()) {
+                    addToArray(containerContext, "$", newNodeName);
+                } else {
+                    addToObject(containerContext, "$", newNodeName);
+                }
+            }
+            return nodeContext.read("$");
+        } else {
+            return parentNode.isArray()
+                    ? addToArray(nodeContext, pathToParent, newNodeName)
+                    : addToObject(nodeContext, pathToParent, newNodeName);
+        }
     }
 
     private JsonNode addToArray(final DocumentContext node, String jsonPath, String newNodeName) throws JsonPatchException {
@@ -108,22 +123,30 @@ public final class AddOperation extends PathValueOperation {
         }
 
         final int size = node.read(jsonPath, JsonNode.class).size();
-        final int index;
-        try {
-            index = Integer.parseInt(newNodeName);
-        } catch (NumberFormatException ignored) {
-            throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.notAnIndex"));
-        }
-        if (index < 0 || index > size)
-            throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchIndex"));
+        final int index = verifyAndGetArrayIndex(newNodeName, size);
 
         ArrayNode updatedArray = node.read(jsonPath, ArrayNode.class).insert(index, value);
         return "$".equals(jsonPath) ? updatedArray : node.set(jsonPath, updatedArray).read("$", JsonNode.class);
     }
 
     private JsonNode addToObject(final DocumentContext node, String jsonPath, String newNodeName) {
+        String strippedName = newNodeName.replace("[", "").replace("]", "");
         return node
-                .put(jsonPath, newNodeName, value)
+                .put(jsonPath, strippedName, value)
                 .read("$", JsonNode.class);
+    }
+
+    private int verifyAndGetArrayIndex(String wrappedIndex, int size) throws JsonPatchException {
+        final String stringIndex = wrappedIndex.replace("[", "").replace("]", "");
+        int index;
+        try {
+            index = Integer.parseInt(stringIndex);
+        } catch (NumberFormatException ignored) {
+            throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.notAnIndex"));
+        }
+        if (index < 0 || index > size) {
+            throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchIndex"));
+        }
+        return index;
     }
 }
