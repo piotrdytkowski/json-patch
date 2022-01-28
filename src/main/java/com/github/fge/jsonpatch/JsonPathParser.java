@@ -6,6 +6,9 @@ public class JsonPathParser {
     private static final String ARRAY_ELEMENT_LAST_REGEX = "\\.(\\d+)$";
 
     public static String tmfStringToJsonPath(String path) {
+        if (!path.startsWith("/") && !path.isEmpty()) {
+            return "$." + path;
+        }
         if ("/".equals(path)) {
             return "$";
         }

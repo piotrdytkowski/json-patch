@@ -85,7 +85,8 @@ public final class AddOperation extends PathValueOperation {
          */
         final String fullJsonPath = JsonPathParser.tmfStringToJsonPath(path);
         final int lastDotIndex = fullJsonPath.lastIndexOf('.');
-        final String newNodeName = fullJsonPath.substring(lastDotIndex + 1);
+        final String newNodeName = fullJsonPath.substring(lastDotIndex + 1)
+                .replace("[", "").replace("]", "");
         final String pathToParent = fullJsonPath.substring(0, lastDotIndex);
 
         final DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
@@ -130,14 +131,12 @@ public final class AddOperation extends PathValueOperation {
     }
 
     private JsonNode addToObject(final DocumentContext node, String jsonPath, String newNodeName) {
-        String strippedName = newNodeName.replace("[", "").replace("]", "");
         return node
-                .put(jsonPath, strippedName, value)
+                .put(jsonPath, newNodeName, value)
                 .read("$", JsonNode.class);
     }
 
-    private int verifyAndGetArrayIndex(String wrappedIndex, int size) throws JsonPatchException {
-        final String stringIndex = wrappedIndex.replace("[", "").replace("]", "");
+    private int verifyAndGetArrayIndex(String stringIndex, int size) throws JsonPatchException {
         int index;
         try {
             index = Integer.parseInt(stringIndex);

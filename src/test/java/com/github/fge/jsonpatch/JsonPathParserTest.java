@@ -30,4 +30,12 @@ public class JsonPathParserTest {
         assertEquals(result, expected);
     }
 
+    @Test
+    public void shouldConvertFilterQuery() {
+        String filterQuery = "note[?(@.author=='John Doe')].date";
+        String expected = "$.note[?(@.author=='John Doe')].date";
+        String result = JsonPathParser.tmfStringToJsonPath(filterQuery);
+        assertEquals(result, expected);
+    }
+
 }
