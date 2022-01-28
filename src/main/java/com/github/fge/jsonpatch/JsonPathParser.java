@@ -30,11 +30,15 @@ public class JsonPathParser {
         if (pointerAndQuery.length == 2) {
             String preparedFilter = pointerAndQuery[1]
                     .replaceAll("=", "==")
-                    .replaceAll("==([\\w ]+)", "=='$1'")
+                    .replaceAll("==([\\w .]+)", "=='$1'")
                     .replaceFirst("\\w+", "@")
                     .replaceAll("&\\w+", " && @")
                     .replaceAll("\\|\\w+", " || @");//TODO are logical ORs supported?
-            return jsonPath.replaceFirst("(\\w+)", "$1[?(" + preparedFilter + ")]");
+            String filterWithBooleansAndNumbers = preparedFilter
+                    .replaceAll("@([\\w.]+)=='(true|false)'", "(@$1==$2 || @$1=='$2')")
+                    .replaceAll("@([\\w.]+)=='(\\d+)'", "(@$1==$2 || @$1=='$2')")
+                    .replaceAll("@([\\w.]+)=='(\\d+\\.\\d+)'", "(@$1==$2 || @$1=='$2')");
+            return jsonPath.replaceFirst("(\\w+)", "$1[?(" + filterWithBooleansAndNumbers + ")]");
         } else {
             return jsonPath;
         }
