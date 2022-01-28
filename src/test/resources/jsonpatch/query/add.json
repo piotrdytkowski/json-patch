@@ -5,68 +5,120 @@
       "op": {
         "op": "add",
         "path": "/note/text?note.verified=true",
-        "value":"Informed"
+        "value": "Informed"
       },
       "node": {
         "id": "1",
         "correlationId": "TT53482",
-        "note": [{
-          "verified": false,
-          "date": "2013-07-24T09:55:30.0Z",
-          "author": "Arthur Evans"
-        },
+        "note": [
+          {
+            "verified": false,
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans"
+          },
           {
             "verified": true,
             "date": "2013-07-25T08:55:12.0Z",
             "author": "John Doe"
-          }]
+          }
+        ]
       },
       "expected": {
         "id": "1",
         "correlationId": "TT53482",
-        "note": [{
-          "verified": false,
-          "date": "2013-07-24T09:55:30.0Z",
-          "author": "Arthur Evans"
-        },
+        "note": [
+          {
+            "verified": false,
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans"
+          },
           {
             "verified": true,
             "date": "2013-07-25T08:55:12.0Z",
             "author": "John Doe",
             "text": "Informed"
-          }]
+          }
+        ]
       }
     },
     {
       "op": {
         "op": "add",
-        "path": "/note/text?note.author=John Doe",
-        "value":"Informed"
+        "path": "/note/text?note.price=8.5",
+        "value": "Informed"
       },
       "node": {
         "id": "1",
         "correlationId": "TT53482",
-        "note": [{
-          "date": "2013-07-24T09:55:30.0Z",
-          "author": "Arthur Evans"
-        },
+        "note": [
+          {
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans",
+            "price": 16
+          },
           {
             "date": "2013-07-25T08:55:12.0Z",
-            "author": "John Doe"
-          }]
+            "author": "John Doe",
+            "price": 8.5
+          }
+        ]
       },
       "expected": {
         "id": "1",
         "correlationId": "TT53482",
-        "note": [{
-          "date": "2013-07-24T09:55:30.0Z",
-          "author": "Arthur Evans"
-        },
+        "note": [
+          {
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans",
+            "price": 16
+          },
           {
             "date": "2013-07-25T08:55:12.0Z",
             "author": "John Doe",
+            "price": 8.5,
             "text": "Informed"
-          }]
+          }
+        ]
+      }
+    },
+    {
+      "op": {
+        "op": "add",
+        "path": "/note/text?note.price>9",
+        "value": "Informed"
+      },
+      "node": {
+        "id": "1",
+        "correlationId": "TT53482",
+        "note": [
+          {
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans",
+            "price": 16
+          },
+          {
+            "date": "2013-07-25T08:55:12.0Z",
+            "author": "John Doe",
+            "price": 8.5
+          }
+        ]
+      },
+      "expected": {
+        "id": "1",
+        "correlationId": "TT53482",
+        "note": [
+          {
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans",
+            "price": 16,
+            "text": "Informed"
+          },
+          {
+            "date": "2013-07-25T08:55:12.0Z",
+            "author": "John Doe",
+            "price": 8.5
+          }
+        ]
       }
     },
     {
@@ -74,32 +126,36 @@
       "op": {
         "op": "add",
         "path": "/note/text?note.author=John Doe",
-        "value":"Informed"
+        "value": "Informed"
       },
       "node": {
         "id": "1",
         "correlationId": "TT53482",
-        "note": [{
-          "date": "2013-07-24T09:55:30.0Z",
-          "author": "Arthur Evans"
-        },
+        "note": [
+          {
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans"
+          },
           {
             "date": "2013-07-25T08:55:12.0Z",
             "author": "John Doe"
-          }]
+          }
+        ]
       },
       "expected": {
         "id": "1",
         "correlationId": "TT53482",
-        "note": [{
-          "date": "2013-07-24T09:55:30.0Z",
-          "author": "Arthur Evans"
-        },
+        "note": [
+          {
+            "date": "2013-07-24T09:55:30.0Z",
+            "author": "Arthur Evans"
+          },
           {
             "date": "2013-07-25T08:55:12.0Z",
             "author": "John Doe",
             "text": "Informed"
-          }]
+          }
+        ]
       }
     }
   ]
