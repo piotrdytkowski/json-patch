@@ -91,20 +91,22 @@ public final class AddOperation extends PathValueOperation {
 
         final DocumentContext nodeContext = JsonPath.parse(node.deepCopy());
 
-        final JsonNode parentNode = nodeContext.read(pathToParent);
-        if (parentNode == null) {
+        final JsonNode evaluatedJsonParents = nodeContext.read(pathToParent);
+        if (evaluatedJsonParents == null) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.noSuchParent"));
         }
-        if (!parentNode.isContainerNode()) {
+        if (!evaluatedJsonParents.isContainerNode()) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.parentNotContainer"));
         }
 
-        // result will be a list of nodes
-        if (pathToParent.contains("[?(")) {
-            for (int i = 0; i < parentNode.size(); i++) {
-                JsonNode containerNode = parentNode.get(i);
-                DocumentContext containerContext = JsonPath.parse(containerNode);
-                if (containerNode.isArray()) {
+        if (pathToParent.contains("[?(")) { // json filter result is always a list
+            for (int i = 0; i < evaluatedJsonParents.size(); i++) {
+                JsonNode parentNode = evaluatedJsonParents.get(i);
+                if (!parentNode.isContainerNode()) {
+                    throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.parentNotContainer"));
+                }
+                DocumentContext containerContext = JsonPath.parse(parentNode);
+                if (parentNode.isArray()) {
                     addToArray(containerContext, "$", newNodeName);
                 } else {
                     addToObject(containerContext, "$", newNodeName);
@@ -112,7 +114,7 @@ public final class AddOperation extends PathValueOperation {
             }
             return nodeContext.read("$");
         } else {
-            return parentNode.isArray()
+            return evaluatedJsonParents.isArray()
                     ? addToArray(nodeContext, pathToParent, newNodeName)
                     : addToObject(nodeContext, pathToParent, newNodeName);
         }

@@ -15,8 +15,8 @@ public class JsonPathParser {
             return "$";
         }
         final String[] pointerAndQuery = path
-                .replaceAll("(\\w)\\?", "$1#")
-                .split("#", -1);
+                .replaceAll("(\\w)\\?", "$1#THIS_IS_SPLIT_PLACEHOLDER#")
+                .split("#THIS_IS_SPLIT_PLACEHOLDER#", -1);
         if (pointerAndQuery.length > 2) {
             throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.invalidPathExpression"));
         }
