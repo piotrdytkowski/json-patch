@@ -157,6 +157,170 @@
           }
         ]
       }
+    },
+    {
+      "description": "Additional test 1",
+      "op": {
+        "op": "add",
+        "path": "/contactMedium/ThisHasBeenAdded?contactMedium.mediumType=phone",
+        "value": true
+      },
+      "node": {
+        "aristocraticTitle": "Baron",
+        "boolean": true,
+        "deathDate": "2021-07-12T10:54:17Z",
+        "title": "Sir",
+        "contactMedium": [
+          {
+            "mediumType": "phone",
+            "preferred": false,
+            "characteristic": {
+              "addressKeyType": "AA",
+              "addressKey": "AAAAA"
+            }
+          },
+          {
+            "mediumType": "pager",
+            "preferred": true,
+            "characteristic": {
+              "addressKeyType": "BB",
+              "addressKey": "BBBBBB"
+            }
+          },
+          {
+            "mediumType": "facebook",
+            "preferred": true,
+            "characteristic": {
+              "addressKeyType": "BB",
+              "addressKey": "BBBBBB",
+              "detail": {
+                "detailA": "A",
+                "detailB": "B"
+              }
+            }
+          }
+        ]
+      },
+      "expected": {
+        "aristocraticTitle": "Baron",
+        "boolean": true,
+        "deathDate": "2021-07-12T10:54:17Z",
+        "title": "Sir",
+        "contactMedium": [
+          {
+            "mediumType": "phone",
+            "preferred": false,
+            "characteristic": {
+              "addressKeyType": "AA",
+              "addressKey": "AAAAA"
+            },
+            "ThisHasBeenAdded": true
+          },
+          {
+            "mediumType": "pager",
+            "preferred": true,
+            "characteristic": {
+              "addressKeyType": "BB",
+              "addressKey": "BBBBBB"
+            }
+          },
+          {
+            "mediumType": "facebook",
+            "preferred": true,
+            "characteristic": {
+              "addressKeyType": "BB",
+              "addressKey": "BBBBBB",
+              "detail": {
+                "detailA": "A",
+                "detailB": "B"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "description": "Additional test 2",
+      "op": {
+        "op": "add",
+        "path": "contactMedium[?(@.mediumType=='phone')].newProperty",
+        "value": {
+          "ThisHasBeenAdded": true
+        }
+      },
+      "node": {
+        "aristocraticTitle": "Baron",
+        "boolean": true,
+        "deathDate": "2021-07-12T10:54:17Z",
+        "title": "Sir",
+        "contactMedium": [
+          {
+            "mediumType": "phone",
+            "preferred": false,
+            "characteristic": {
+              "addressKeyType": "AA",
+              "addressKey": "AAAAA"
+            }
+          },
+          {
+            "mediumType": "pager",
+            "preferred": true,
+            "characteristic": {
+              "addressKeyType": "BB",
+              "addressKey": "BBBBBB"
+            }
+          },
+          {
+            "mediumType": "facebook",
+            "preferred": true,
+            "characteristic": {
+              "addressKeyType": "BB",
+              "addressKey": "BBBBBB",
+              "detail": {
+                "detailA": "A",
+                "detailB": "B"
+              }
+            }
+          }
+        ]
+      },
+      "expected": {
+        "aristocraticTitle": "Baron",
+        "boolean": true,
+        "deathDate": "2021-07-12T10:54:17Z",
+        "title": "Sir",
+        "contactMedium": [
+          {
+            "mediumType": "phone",
+            "preferred": false,
+            "characteristic": {
+              "addressKeyType": "AA",
+              "addressKey": "AAAAA"
+            },
+            "newProperty": {"ThisHasBeenAdded": true}
+          },
+          {
+            "mediumType": "pager",
+            "preferred": true,
+            "characteristic": {
+              "addressKeyType": "BB",
+              "addressKey": "BBBBBB"
+            }
+          },
+          {
+            "mediumType": "facebook",
+            "preferred": true,
+            "characteristic": {
+              "addressKeyType": "BB",
+              "addressKey": "BBBBBB",
+              "detail": {
+                "detailA": "A",
+                "detailB": "B"
+              }
+            }
+          }
+        ]
+      }
     }
   ]
 }

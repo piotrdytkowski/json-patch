@@ -1,11 +1,13 @@
 package com.github.fge.jsonpatch;
 
+import static com.github.fge.jsonpatch.JsonPatchOperation.BUNDLE;
+
 public class JsonPathParser {
 
     private static final String ARRAY_ELEMENT_REGEX = "\\.(\\d+)\\.";
     private static final String ARRAY_ELEMENT_LAST_REGEX = "\\.(\\d+)$";
 
-    public static String tmfStringToJsonPath(String path) {
+    public static String tmfStringToJsonPath(String path) throws JsonPatchException {
         if (!path.startsWith("/") && !path.isEmpty()) {
             return "$." + path;
         }
@@ -16,8 +18,7 @@ public class JsonPathParser {
                 .replaceAll("(\\w)\\?", "$1#")
                 .split("#", -1);
         if (pointerAndQuery.length > 2) {
-            // TODO use different exception
-            throw new RuntimeException("Invalid query, only one `?` allowed.");
+            throw new JsonPatchException(BUNDLE.getMessage("jsonPatch.invalidPathExpression"));
         }
 
         final String jsonPath = "$" + pointerAndQuery[0].replace('/', '.')
