@@ -111,15 +111,12 @@
           }
         ]
       }
-    }
-
-  ],
-  "notWorking": [
+    },
     {
       "description": "TMF630 - Example 7 - Replacing an attribute from one of the components of a complex array (resolving ambiguities)",
       "op": {
         "op": "replace",
-        "path": "/orderItem/quantity?orderItem.productOffering.id=1513&orderItem.product.relatedParty.role=customer&orderItem.product.relatedParty.name=Mary",
+        "path": "/orderItem/quantity?orderItem.productOffering.id=1513&orderItem.product.relatedParty[?(@.role=='customer' && @.name=='Mary')]",
         "value": 25
       },
       "node": {

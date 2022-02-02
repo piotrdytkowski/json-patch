@@ -12,7 +12,9 @@ public class JsonPathParser {
         if ("/".equals(path)) {
             return "$";
         }
-        final String[] pointerAndQuery = path.split("\\?", -1);
+        final String[] pointerAndQuery = path
+                .replaceAll("(\\w)\\?", "$1#")
+                .split("#", -1);
         if (pointerAndQuery.length > 2) {
             // TODO use different exception
             throw new RuntimeException("Invalid query, only one `?` allowed.");
@@ -29,15 +31,15 @@ public class JsonPathParser {
     private static String addQueryIfApplicable(String jsonPath, String[] pointerAndQuery) {
         if (pointerAndQuery.length == 2) {
             String preparedFilter = pointerAndQuery[1]
-                    .replaceAll("=", "==")
-                    .replaceAll("==([\\w .]+)", "=='$1'")
-                    .replaceFirst("\\w+", "@")
-                    .replaceAll("&\\w+", " && @")
-                    .replaceAll("\\|\\w+", " || @");//TODO are logical ORs supported?
+                    .replaceAll("]", "] empty false") // add empty false to nested array expressions
+                    .replaceAll("(\\w)=(\\w)", "$1==$2") // replace single equals with double
+                    .replaceAll("==([\\w .]+)", "=='$1'") // surround strings with single quotes
+                    .replaceFirst("\\w+", "@") // jsonpath expression should start with @ as the name of item
+                    .replaceAll("([&|])\\w+", " $1$1 @"); // replace single | and & with doubles
             String filterWithBooleansAndNumbers = preparedFilter
-                    .replaceAll("@([\\w.]+)=='(true|false)'", "(@$1==$2 || @$1=='$2')")
-                    .replaceAll("@([\\w.]+)=='(\\d+)'", "(@$1==$2 || @$1=='$2')")
-                    .replaceAll("@([\\w.]+)=='(\\d+\\.\\d+)'", "(@$1==$2 || @$1=='$2')");
+                    .replaceAll("@([\\w.]+)=='(true|false)'", "(@$1==$2 || @$1=='$2')") // prepare a statement for boolean and boolean as string
+                    .replaceAll("@([\\w.]+)=='(\\d+)'", "(@$1==$2 || @$1=='$2')") // prepare a statement for an integer and integer as string
+                    .replaceAll("@([\\w.]+)=='(\\d+\\.\\d+)'", "(@$1==$2 || @$1=='$2')"); // prepare a statement for float and float as string
             return jsonPath.replaceFirst("(\\w+)", "$1[?(" + filterWithBooleansAndNumbers + ")]");
         } else {
             return jsonPath;

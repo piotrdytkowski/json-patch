@@ -55,6 +55,22 @@ public class JsonPathParserTest {
     }
 
     @Test
+    public void shouldConvertNestedArrayQuery() {
+        String jsonPointerWithQuery = "/orderItem/quantity?orderItem.productOffering.id=1513&orderItem.product.relatedParty[?(@.role=='customer' && @.name=='Mary')]";
+        String expected = "$.orderItem[?((@.productOffering.id==1513 || @.productOffering.id=='1513') && @.product.relatedParty[?(@.role=='customer' && @.name=='Mary')] empty false)].quantity";
+        String result = JsonPathParser.tmfStringToJsonPath(jsonPointerWithQuery);
+        assertEquals(result, expected);
+    }
+
+    @Test
+    public void shouldConvertNestedArrayQueryWhichIsNotLastStatement() {
+        String jsonPointerWithQuery = "/orderItem/quantity?orderItem.product.relatedParty[?(@.role=='customer' && @.name=='Mary')]&orderItem.productOffering.id=1513";
+        String expected = "$.orderItem[?(@.product.relatedParty[?(@.role=='customer' && @.name=='Mary')] empty false && (@.productOffering.id==1513 || @.productOffering.id=='1513'))].quantity";
+        String result = JsonPathParser.tmfStringToJsonPath(jsonPointerWithQuery);
+        assertEquals(result, expected);
+    }
+
+    @Test
     public void shouldConvertFilterQuery() {
         String filterQuery = "note[?(@.author=='John Doe')].date";
         String expected = "$.note[?(@.author=='John Doe')].date";
