@@ -10,6 +10,9 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+- checkout: self
+  persistCredentials: true
+  displayName: "git credentials"
 - script: |
     git checkout $(Build.SourceBranchName)
     git config --global user.name "Azure DevOps"
@@ -29,6 +32,7 @@ steps:
     publishJUnitResults: true
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'clean test'
+  displayName: 'Gradle build and test'
 - task: Gradle@2
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
@@ -38,10 +42,10 @@ steps:
     javaHomeOption: 'JDKVersion'
     jdkVersionOption: '1.8'
     jdkArchitectureOption: 'x64'
-    tasks: 'release -Prelease.useAutomaticVersion=true'
+    tasks: 'clean release -Prelease.useAutomaticVersion=true'
+  displayName: 'Gradle release and publish artifacts'
 - task: PublishPipelineArtifact@1
   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
   inputs:
-    targetPath: $(System.DefaultWorkingDirectory)/build/libs/$(artifactName)
-    artifactName: artifact
+    targetPath: $(System.DefaultWorkingDirectory)/build/libs/
   displayName: "publish build artifact"
